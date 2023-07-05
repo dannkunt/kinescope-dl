@@ -17,10 +17,16 @@ KINESCOPE_CLEARKEY_LICENSE_URL = 'https://license.kinescope.io/v1/vod/{video_id}
 
 kinescope_id = input('> KINESCOPE URL or VIDEO ID: ').replace(KINESCOPE_BASE_URL, '').replace('/', '')
 
-kinescope_video_id = requests.get(
-    url=KINESCOPE_BASE_URL + '/' + kinescope_id,
-    headers={'Referer': input('> REFERER URL (optional): ')}
-).text.split('id: "')[1].split('"')[0] if kinescope_id.isdigit() else kinescope_id
+kinescope_video_id = (
+    requests.get(
+        url=f'{KINESCOPE_BASE_URL}/{kinescope_id}',
+        headers={'Referer': input('> REFERER URL (optional): ')},
+    )
+    .text.split('id: "')[1]
+    .split('"')[0]
+    if kinescope_id.isdigit()
+    else kinescope_id
+)
 
 master = MPEGDASHParser.parse(requests.get(
     url=KINESCOPE_MASTER_URL.format(video_id=kinescope_video_id),
